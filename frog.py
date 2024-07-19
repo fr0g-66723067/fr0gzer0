@@ -18,7 +18,7 @@ disp.clear()
 disp.bl_DutyCycle(50)
 
 logging.info("show image")
-image = Image.open('pic.jpg')
+image = Image.open('frog-logo.png')
 im_r = image.rotate(270)
 disp.ShowImage(im_r)
 time.sleep(3)
