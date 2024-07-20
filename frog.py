@@ -51,12 +51,11 @@ def toggle_display():
     global display_state
     display_state = not display_state
     if display_state:
-        disp.clear()
         disp.bl_DutyCycle(50)
         display_state = True
+        display_menu()
     else:
         disp.bl_DutyCycle(0)
-        display_menu()
         display_state = False
 
 
