@@ -76,6 +76,8 @@ def display_file_contents(filename):
                 essid = row.get("ESSID", "Unknown").strip()
                 bssid = row.get("BSSID", "Unknown").strip()
                 networks.append((essid, bssid))
+        print("Networks found:", networks)
+        display_network_details(networks)
     except Exception as e:
         print(f"Error reading file: {e}")
 
