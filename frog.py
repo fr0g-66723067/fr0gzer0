@@ -1,6 +1,8 @@
 import logging
 import ST7789
 import time
+import subprocess
+
 from PIL import Image, ImageDraw, ImageFont
 
 # Initialize logging and display
@@ -17,9 +19,40 @@ def display_logo():
     time.sleep(3)
 
 
+def execute_command_and_display_output():
+    # Define the command to execute, e.g., 'ls' for listing directory contents
+    command = ["ls", "-l"]
+
+    # Execute the command and capture the output
+    result = subprocess.run(command, stdout=subprocess.PIPE, text=True)
+
+    # Clear the display before showing new content
+    disp.clear()
+
+    # Create a new image for drawing
+    image = Image.new("RGB", (disp.width, disp.height), "BLACK")
+    draw = ImageDraw.Draw(image)
+
+    # Set up font and text color
+    font = ImageFont.truetype("Font/Font02.ttf", 20)
+    text_color = (255, 255, 255)  # White color
+
+    # Split the output into lines for display
+    output_lines = result.stdout.split('\n')
+
+    # Display each line of the output
+    for i, line in enumerate(output_lines):
+        y_position = i * 25  # Adjust y position based on font size and desired spacing
+        draw.text((10, y_position), line, fill=text_color, font=font)
+
+    # Show the image on the display
+    disp.ShowImage(image)
+
+
 # Menu structure
 menu_items = [
     {"name": "Item 1", "action": "action1"},
+    {"name": "Execute Command", "action": execute_command_and_display_output},
     {"name": "Show Image", "action": display_logo},  # Reference to the function
     {"name": "Submenu", "submenu": [
         {"name": "Subitem 1", "action": "subaction1"},
