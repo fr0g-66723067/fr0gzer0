@@ -2,6 +2,7 @@ import logging
 import ST7789
 import time
 import subprocess
+import threading
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -18,38 +19,51 @@ def display_logo():
     disp.ShowImage(image)
     time.sleep(3)
 
+    import threading
+
 
 def execute_command_and_display_output():
-    # Define the command to execute, e.g., 'ls' for listing directory contents
-    command = ["sudo", "airodump-ng", "wlan1"]
+    def run_command():
+        command = ["sudo", "airodump-ng", "wlan1"]
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
 
-    # Run the command and capture the output
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=30)
+        while not stop_thread.is_set():
+            line = process.stdout.readline()
+            if not line:
+                break
+            if "BSSID" in line or "ESSID" in line:
+                with thread_lock:
+                    summary_lines.append(line.strip())
+                    if len(summary_lines) > 10:
+                        summary_lines.pop(0)
 
-    lines = result.stdout.split('\n')
+        process.terminate()
+
     summary_lines = []
-    for line in lines:
-        if "BSSID" in line or "ESSID" in line:
-            summary_lines.append(line.strip())
+    thread_lock = threading.Lock()
+    stop_thread = threading.Event()
+    command_thread = threading.Thread(target=run_command)
+    command_thread.start()
 
-    # Clear the display before showing new content
-    disp.clear()
+    try:
+        while not disp.digital_read(disp.GPIO_KEY1_PIN):
+            disp.clear()
+            image = Image.new("RGB", (disp.width, disp.height), "BLACK")
+            draw = ImageDraw.Draw(image)
 
-    # Create a new image for drawing
-    image = Image.new("RGB", (disp.width, disp.height), "BLACK")
-    draw = ImageDraw.Draw(image)
+            with thread_lock:
+                for i, line in enumerate(summary_lines):
+                    y_position = i * 15
+                    draw.text((10, y_position), line, fill=(255, 255, 255),
+                              font=ImageFont.truetype("Font/Font02.ttf", 20))
 
-    # Set up font and text color
-    font = ImageFont.truetype("Font/Font02.ttf", 20)
-    text_color = (255, 255, 255)  # White color
+            disp.ShowImage(image)
+            time.sleep(0.1)
+    finally:
+        stop_thread.set()
+        command_thread.join()
 
-    # Display each line of the output
-    for i, line in enumerate(summary_lines[:10]):
-        y_position = i * 15  # Adjust y position based on font size and desired spacing
-        draw.text((10, y_position), line, fill=text_color, font=font)
-
-    # Show the image on the display
-    disp.ShowImage(image)
+    # Clear the display or return to the main menu here
 
 
 # Menu structure
