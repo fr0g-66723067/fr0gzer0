@@ -1,7 +1,7 @@
 import logging
 import ST7789
 import time
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 # Initialize logging and display
 logging.basicConfig(level=logging.DEBUG)
@@ -36,11 +36,15 @@ def display_menu():
     disp.clear()
     image = Image.new("RGB", (disp.width, disp.height), "BLACK")
     draw = ImageDraw.Draw(image)
+
+    font = ImageFont.truetype("Font/Font01.ttf", 20)
+
     for i, item in enumerate(current_menu):
+        text_color = (0, 255, 0)
         if i == current_index:
-            draw.text((10, i*20), "> " + item["name"], fill="WHITE")
+            draw.text((10, i*20), "> " + item["name"], fill=text_color, font=font)
         else:
-            draw.text((10, i*20), item["name"], fill="WHITE")
+            draw.text((10, i*20), item["name"], fill=text_color, font=font)
     disp.ShowImage(image)
 
 
