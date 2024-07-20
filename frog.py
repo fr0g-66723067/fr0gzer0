@@ -141,27 +141,6 @@ current_menu = menu_items
 current_index = 0
 menu_stack = []
 
-
-def display_menu():
-    disp.clear()
-    image = Image.new("RGB", (disp.width, disp.height), "BLACK")
-    draw = ImageDraw.Draw(image)
-
-    font = ImageFont.truetype("Font/Font02.ttf", 36)
-    text_color = (0, 255, 0)  # Green color in RGB
-
-    # Calculate the height of the text with the current font size
-    text_height = font.getsize("Test")[1] + 10  # Adding 10 pixels as margin
-
-    for i, item in enumerate(current_menu):
-        y_position = i * text_height  # Calculate the y position based on the text height
-        if i == current_index:
-            draw.text((10, y_position), "> " + item["name"], fill=text_color, font=font)
-        else:
-            draw.text((10, y_position), item["name"], fill=text_color, font=font)
-    disp.ShowImage(image)
-
-
 def handle_input():
     global current_menu, current_index, menu_stack
     last_press_time = time.time()
