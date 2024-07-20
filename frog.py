@@ -10,10 +10,17 @@ disp.Init()
 disp.clear()
 disp.bl_DutyCycle(50)
 
+
+def display_logo():
+    image = Image.open('frog-logo-240x240.jpg')
+    disp.ShowImage(image)
+    time.sleep(3)
+
+
 # Menu structure
 menu_items = [
     {"name": "Item 1", "action": "action1"},
-    {"name": "Item 2", "action": "action2"},
+    {"name": "Show Image", "action": display_logo},  # Reference to the function
     {"name": "Submenu", "submenu": [
         {"name": "Subitem 1", "action": "subaction1"},
         {"name": "Subitem 2", "action": "subaction2"}
@@ -24,12 +31,6 @@ menu_items = [
 current_menu = menu_items
 current_index = 0
 menu_stack = []
-
-
-def display_logo():
-    image = Image.open('frog-logo-240x240.jpg')
-    disp.ShowImage(image)
-    time.sleep(3)
 
 
 def display_menu():
@@ -73,8 +74,8 @@ def handle_input():
                 current_menu = current_menu[current_index]["submenu"]
                 current_index = 0
                 display_menu()
-            else:
-                print(f"Action: {current_menu[current_index]['action']}")
+            elif callable(current_menu[current_index].get("action")):  # Check if action is callable
+                current_menu[current_index]["action"]()  # Execute the function
             last_press_time = now
         elif disp.digital_read(disp.GPIO_KEY1_PIN) != 0 and (now - last_press_time) > debounce_time:  # Back
             if menu_stack:
