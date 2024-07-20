@@ -66,7 +66,7 @@ def start_angryoxide(ghz):
         return
     command = ["sudo", "/usr/bin/angryoxide", "--interface", "wlan1", f"-b {ghz}", "--autohunt", "--headless", "--autoexit", "--output",
                "/home/user/angryoxide_output/fr0gzer0"]
-    print(f"Starting angryoxide with command {command}")
+    print(f"Starting angryoxide with command {"".join(command)}")
     angryoxide_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print("angryoxide started.")
 
