@@ -25,10 +25,12 @@ current_menu = menu_items
 current_index = 0
 menu_stack = []
 
+
 def display_logo():
     image = Image.open('frog-logo-240x240.jpg')
     disp.ShowImage(image)
     time.sleep(3)
+
 
 def display_menu():
     disp.clear()
@@ -41,18 +43,23 @@ def display_menu():
             draw.text((10, i*20), item["name"], fill="WHITE")
     disp.ShowImage(image)
 
+
 def handle_input():
     global current_menu, current_index, menu_stack
+    last_press_time = time.time()
+    debounce_time = 0.3  # Adjust this value as needed
+
     while True:
-        if disp.digital_read(disp.GPIO_KEY_UP_PIN) == 0:
+        now = time.time()
+        if disp.digital_read(disp.GPIO_KEY_UP_PIN) == 0 and (now - last_press_time) > debounce_time:
             current_index = (current_index - 1) % len(current_menu)
             display_menu()
-            time.sleep(0.3)
-        elif disp.digital_read(disp.GPIO_KEY_DOWN_PIN) == 0:
+            last_press_time = now
+        elif disp.digital_read(disp.GPIO_KEY_DOWN_PIN) == 0 and (now - last_press_time) > debounce_time:
             current_index = (current_index + 1) % len(current_menu)
             display_menu()
-            time.sleep(0.3)
-        elif disp.digital_read(disp.GPIO_KEY_PRESS_PIN) == 0:  # Enter
+            last_press_time = now
+        elif disp.digital_read(disp.GPIO_KEY_PRESS_PIN) == 0 and (now - last_press_time) > debounce_time:  # Enter
             if "submenu" in current_menu[current_index]:
                 menu_stack.append((current_menu, current_index))
                 current_menu = current_menu[current_index]["submenu"]
@@ -60,12 +67,13 @@ def handle_input():
                 display_menu()
             else:
                 print(f"Action: {current_menu[current_index]['action']}")
-            time.sleep(0.3)
-        elif disp.digital_read(disp.GPIO_KEY1_PIN) == 0:  # Back
+            last_press_time = now
+        elif disp.digital_read(disp.GPIO_KEY1_PIN) == 0 and (now - last_press_time) > debounce_time:  # Back
             if menu_stack:
                 current_menu, current_index = menu_stack.pop()
                 display_menu()
-            time.sleep(0.3)
+            last_press_time = now
+        time.sleep(0.1)  # Small delay to prevent high CPU usage
 
 # Display logo then show menu
 display_logo()
