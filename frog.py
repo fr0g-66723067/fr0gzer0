@@ -15,7 +15,7 @@ disp.clear()
 disp.bl_DutyCycle(5)
 
 # Global variable to hold the airodump-ng process
-airodump_process = None
+angryoxide_process = None
 display_state = True
 
 
@@ -26,26 +26,50 @@ def display_logo():
 
 
 def start_airodump():
-    global airodump_process
+    global angryoxide_process
     # Ensure no previous instance is running
-    if airodump_process is not None:
+    if angryoxide_process is not None:
         print("Airodump-ng is already running.")
         return
     # Start airodump-ng with output directed to a log file in JSON format
-    command = ["sudo", "airodump-ng", "-i", "wlan1", "--write-interval", "1", "--output-format", "csv", "-w", "/home/user/airodump_output/fr0gzer0"]
-    airodump_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    command = ["sudo", "airodump-ng", "-i", "wlan1", "--write-interval", "1", "--output-format", "csv", "-w",
+               "/home/user/airodump_output/fr0gzer0"]
+    angryoxide_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print("Airodump-ng started.")
 
 
 def stop_airodump():
-    global airodump_process
-    if airodump_process is None:
+    global angryoxide_process
+    if angryoxide_process is None:
         print("Airodump-ng is not running.")
         return
     # Terminate the process
-    airodump_process.terminate()
-    airodump_process = None
+    angryoxide_process.terminate()
+    angryoxide_process = None
     print("Airodump-ng stopped.")
+
+
+def start_angryoxide(ghz):
+    global angryoxide_process
+    # Ensure no previous instance is running
+    if angryoxide_process is not None:
+        print("angryoxide is already running.")
+        return
+    command = ["sudo", "angryoxide", "--interface", "wlan1", f"-b {ghz}", "--output",
+               "/home/user/angryoxide_output/fr0gzer0"]
+    angryoxide_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    print("angryoxide started.")
+
+
+def stop_angryoxide():
+    global angryoxide_process
+    if angryoxide_process is None:
+        print("angryoxide is not running.")
+        return
+    # Terminate the process
+    angryoxide_process.terminate()
+    angryoxide_process = None
+    print("angryoxide stopped.")
 
 
 # Modify the existing display_menu function to support scrolling and displaying long lists
@@ -84,28 +108,34 @@ def toggle_display():
         display_state = False
 
 
-# Menu structure
 menu_items = [
     {"name": "recon", "submenu": [
-        {"name": "wifi", "submenu":[
-            {"name": "airodump", "submenu":[
+        {"name": "wifi", "submenu": [
+            {"name": "airodump", "submenu": [
                 {"name": "start", "action": start_airodump},
                 {"name": "stop", "action": stop_airodump}
             ]}
         ]}
     ]},
-    {"name": "start airodump on wlan1", "action": start_airodump},
-    {"name": "stop airodump", "action": stop_airodump},
-    {"name": "Show Image", "action": display_logo},
-    {"name": "Submenu", "submenu": [
-        {"name": "Subitem 1", "action": "subaction1"},
-        {"name": "Subitem 2", "action": "subaction2"}
-    ]}
+    {"name": "attack", "submenu": [
+        {"name": "wifi", "submenu": [
+            {"name": "angryoxide-2ghz", "submenu": [
+                {"name": "start", "action": start_angryoxide(2)},
+                {"name": "stop", "action": stop_angryoxide()}
+            ]},
+            {"name": "angryoxide-5ghz", "submenu": [
+                {"name": "start", "action": start_angryoxide(5)},
+                {"name": "stop", "action": stop_angryoxide()}
+            ]}
+        ]}
+    ]},
+    {"name": "Show logo", "action": display_logo},
 ]
 
 current_menu = menu_items
 current_index = 0
 menu_stack = []
+
 
 def handle_input():
     global current_menu, current_index, menu_stack
