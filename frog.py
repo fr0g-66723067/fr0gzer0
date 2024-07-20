@@ -19,41 +19,40 @@ def display_logo():
     time.sleep(3)
 
 
-def execute_airodump_and_display():
-    # Define the command to execute
-    command = ["sudo", "airodump-ng", "wlan1"]  # Example interface; adjust as needed
+def execute_command_and_display_output():
+    # Define the command to execute, e.g., 'ls' for listing directory contents
+    command = ["ls", "-l"]
 
     # Execute the command and capture the output
-    # Note: This example assumes airodump-ng outputs data quickly and is then terminated. Adjust as needed.
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=30)
+    result = subprocess.run(command, stdout=subprocess.PIPE, text=True)
 
-    # Parse the output to extract key information
-    # This is a placeholder for parsing logic. Adjust based on actual output format.
-    lines = result.stdout.split('\n')
-    summary_lines = []
-    for line in lines:
-        if "BSSID" in line or "ESSID" in line:  # Simplistic filter; adjust as needed
-            summary_lines.append(line.strip())
-
-    # Prepare to display
+    # Clear the display before showing new content
     disp.clear()
+
+    # Create a new image for drawing
     image = Image.new("RGB", (disp.width, disp.height), "BLACK")
     draw = ImageDraw.Draw(image)
-    font = ImageFont.truetype("Font/Font02.ttf", 12)  # Adjust font size as needed
+
+    # Set up font and text color
+    font = ImageFont.truetype("Font/Font02.ttf", 20)
     text_color = (255, 255, 255)  # White color
 
-    # Display each line of the summary
-    for i, line in enumerate(summary_lines[:10]):  # Limit to first 10 lines for example
-        y_position = i * 15  # Adjust y position based on font size and desired spacing
+    # Split the output into lines for display
+    output_lines = result.stdout.split('\n')
+
+    # Display each line of the output
+    for i, line in enumerate(output_lines):
+        y_position = i * 25  # Adjust y position based on font size and desired spacing
         draw.text((10, y_position), line, fill=text_color, font=font)
 
     # Show the image on the display
     disp.ShowImage(image)
 
+
 # Menu structure
 menu_items = [
     {"name": "Item 1", "action": "action1"},
-    {"name": "Execute Command", "action": execute_airodump_and_display()},
+    {"name": "Execute Command", "action": execute_command_and_display_output},
     {"name": "Show Image", "action": display_logo},  # Reference to the function
     {"name": "Submenu", "submenu": [
         {"name": "Subitem 1", "action": "subaction1"},
