@@ -15,6 +15,7 @@ disp.clear()
 disp.bl_DutyCycle(5)
 
 # Global variable to hold the airodump-ng process
+airodump_process = None
 angryoxide_process = None
 display_state = True
 
