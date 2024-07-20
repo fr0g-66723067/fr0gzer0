@@ -2,7 +2,7 @@ import logging
 import ST7789
 import time
 import subprocess
-import threading
+import os
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -15,8 +15,8 @@ disp.bl_DutyCycle(50)
 
 # Global variable to hold the airodump-ng process
 airodump_process = None
-
 display_state = True
+
 
 def display_logo():
     image = Image.open('frog-logo-240x240.jpg')
@@ -47,6 +47,51 @@ def stop_airodump():
     print("Airodump-ng stopped.")
 
 
+# Function to list all .csv files in the airodump_output directory
+def list_csv_files():
+    csv_files = [f for f in os.listdir("/home/user/airodump_output") if f.endswith('.csv')]
+    return csv_files
+
+
+# Function to display the list of .csv files and handle scrolling
+def display_csv_files():
+    csv_files = list_csv_files()
+    global current_menu, current_index, menu_stack
+    current_menu = [{"name": f, "action": lambda f=f: display_file_contents(f)} for f in csv_files]
+    current_index = 0
+    display_menu()
+
+
+# Function to display the contents of the selected .csv file (placeholder)
+def display_file_contents(filename):
+    print(f"Displaying contents of {filename}")  # Placeholder for actual implementation
+
+
+# Modify the existing display_menu function to support scrolling and displaying long lists
+def display_menu():
+    disp.clear()
+    image = Image.new("RGB", (disp.width, disp.height), "BLACK")
+    draw = ImageDraw.Draw(image)
+
+    font = ImageFont.truetype("Font/Font02.ttf", 20)
+    text_color = (255, 255, 255)  # White color
+
+    # Calculate the number of items that can fit on the screen
+    max_items = disp.height // (font.getsize("Test")[1] + 10)  # Adjust spacing based on font size
+
+    start_index = max(0, current_index - max_items + 1)
+    end_index = min(len(current_menu), start_index + max_items)
+
+    for i, item in enumerate(current_menu[start_index:end_index], start=start_index):
+        y_position = (i - start_index) * (font.getsize("Test")[1] + 10)  # Adjust spacing based on font size
+        if i == current_index:
+            draw.text((10, y_position), "> " + item["name"], fill=text_color, font=font)
+        else:
+            draw.text((10, y_position), item["name"], fill=text_color, font=font)
+
+    disp.ShowImage(image)
+
+
 def toggle_display():
     global display_state
     display_state = not display_state
@@ -63,7 +108,8 @@ def toggle_display():
 menu_items = [
     {"name": "start airodump on wlan1", "action": start_airodump},
     {"name": "stop airodump", "action": stop_airodump},
-    {"name": "Show Image", "action": display_logo},  # Reference to the function
+    {"name": "Show Image", "action": display_logo},
+    {"name": "List CSV Files", "action": display_csv_files},
     {"name": "Submenu", "submenu": [
         {"name": "Subitem 1", "action": "subaction1"},
         {"name": "Subitem 2", "action": "subaction2"}
