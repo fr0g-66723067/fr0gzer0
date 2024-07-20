@@ -58,7 +58,7 @@ def list_csv_files():
 def display_csv_files():
     csv_files = list_csv_files()
     global current_menu, current_index, menu_stack
-    current_menu = [{"name": f, "action": lambda f=f: display_file_contents(f)} for f in csv_files]
+    current_menu = [{"name": "Back...", "action": lambda: display_menu()}] + [{"name": f, "action": lambda f=f: display_file_contents(f)} for f in csv_files]
     current_index = 0
     display_menu()
 
