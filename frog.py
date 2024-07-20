@@ -60,12 +60,13 @@ def start_angryoxide_5():
 
 def start_angryoxide(ghz):
     global angryoxide_process
+    run_date = time.strftime("%Y-%m-%d_%H-%M-%S")
     # Ensure no previous instance is running
     if angryoxide_process is not None:
         print("angryoxide is already running.")
         return
     command = ["sudo", "angryoxide", "--interface", "wlan1", "-b", f"{ghz}", "--autohunt", "--headless", "--autoexit", "--output",
-               "/home/user/angryoxide_output/fr0gzer0"]
+               f"/home/user/angryoxide_output/fr0gzer0-{run_date}"]
     print(f"Starting angryoxide with command {command}")
     angryoxide_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print("angryoxide started.")
