@@ -61,8 +61,8 @@ def toggle_display():
 
 # Menu structure
 menu_items = [
-    {"name": "start airodump on wlan1", "action": start_airodump()},
-    {"name": "stop airodump", "action": stop_airodump()},
+    {"name": "start airodump on wlan1", "action": start_airodump},
+    {"name": "stop airodump", "action": stop_airodump},
     {"name": "Show Image", "action": display_logo},  # Reference to the function
     {"name": "Submenu", "submenu": [
         {"name": "Subitem 1", "action": "subaction1"},
