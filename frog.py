@@ -58,28 +58,9 @@ def list_csv_files():
 def display_csv_files():
     csv_files = list_csv_files()
     global current_menu, current_index, menu_stack
-    current_menu = [{"name": "Back...", "action": lambda: display_menu()}] + [{"name": f, "action": lambda f=f: display_file_contents(f)} for f in csv_files]
+    current_menu = [{"name": "Back...", "action": lambda: display_menu()}] + [{"name": f, "action": lambda f=f: None} for f in csv_files]
     current_index = 0
     display_menu()
-
-
-# Function to display the contents of the selected .csv file (placeholder)
-def display_file_contents(filename):
-    print("Displaying file contents for:", filename)
-    csv_file_path = f"/home/user/airodump_output/{filename}"
-    networks = []
-
-    try:
-        with open(csv_file_path, mode='r') as file:
-            csv_reader = csv.DictReader(file)
-            for row in csv_reader:
-                essid = row.get("ESSID", "Unknown").strip()
-                bssid = row.get("BSSID", "Unknown").strip()
-                networks.append((essid, bssid))
-        print("Networks found:", networks)
-        display_network_details(networks)
-    except Exception as e:
-        print(f"Error reading file: {e}")
 
 
 def display_network_details(networks):
