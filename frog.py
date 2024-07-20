@@ -126,7 +126,7 @@ def handle_input():
                 display_menu()
             last_press_time = now
         elif disp.digital_read(disp.GPIO_KEY3_PIN) != 0 and (now - last_press_time) > debounce_time:
-            turn_off_display()
+            toggle_display()
             last_press_time = now
         time.sleep(0.1)  # Small delay to prevent high CPU usage
 
