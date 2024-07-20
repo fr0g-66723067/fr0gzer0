@@ -48,28 +48,6 @@ def stop_airodump():
     print("Airodump-ng stopped.")
 
 
-# Function to list all .csv files in the airodump_output directory
-def list_csv_files():
-    csv_files = [f for f in os.listdir("/home/user/airodump_output") if f.endswith('.csv')]
-    return csv_files
-
-
-# Function to display the list of .csv files and handle scrolling
-def display_csv_files():
-    csv_files = list_csv_files()
-    global current_menu, current_index, menu_stack
-    current_menu = [{"name": "Back...", "action": lambda: display_menu()}] + [{"name": f, "action": lambda f=f: None} for f in csv_files]
-    current_index = 0
-    display_menu()
-
-
-def display_network_details(networks):
-    global current_menu, current_index, menu_stack
-    current_menu = [{"name": f"ESSID: {net[0]}, BSSID: {net[1]}", "action": lambda: None} for net in networks]
-    current_index = 0
-    display_menu()
-
-
 # Modify the existing display_menu function to support scrolling and displaying long lists
 def display_menu():
     disp.clear()
@@ -108,10 +86,17 @@ def toggle_display():
 
 # Menu structure
 menu_items = [
+    {"name": "recon", "submenu": [
+        {"name": "wifi", "submenu":[
+            {"name": "airodump", "submenu":[
+                {"name": "start", "action": start_airodump},
+                {"name": "stop", "action": stop_airodump}
+            ]}
+        ]}
+    ]},
     {"name": "start airodump on wlan1", "action": start_airodump},
     {"name": "stop airodump", "action": stop_airodump},
     {"name": "Show Image", "action": display_logo},
-    {"name": "List CSV Files", "action": display_csv_files},
     {"name": "Submenu", "submenu": [
         {"name": "Subitem 1", "action": "subaction1"},
         {"name": "Subitem 2", "action": "subaction2"}
