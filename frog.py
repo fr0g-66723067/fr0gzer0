@@ -37,7 +37,7 @@ def display_menu():
     image = Image.new("RGB", (disp.width, disp.height), "BLACK")
     draw = ImageDraw.Draw(image)
 
-    font = ImageFont.truetype("Font/Font01.ttf", 20)
+    font = ImageFont.truetype("Font/Font02.ttf", 36)
 
     for i, item in enumerate(current_menu):
         text_color = (0, 255, 0)
