@@ -28,13 +28,14 @@ def display_logo():
 
 def start_airodump():
     global airodump_process
+    run_date = time.strftime("%Y-%m-%d_%H-%M-%S")
     # Ensure no previous instance is running
     if airodump_process is not None:
         print("Airodump-ng is already running.")
         return
     # Start airodump-ng with output directed to a log file in JSON format
     command = ["sudo", "airodump-ng", "-i", "wlan1", "--write-interval", "1", "--output-format", "csv", "-w",
-               "/home/user/airodump_output/fr0gzer0"]
+               f"/home/user/airodump_output/fr0gzer0-{run_date}"]
     airodump_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print("Airodump-ng started.")
 
