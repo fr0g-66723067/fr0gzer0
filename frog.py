@@ -16,6 +16,7 @@ disp.bl_DutyCycle(50)
 # Global variable to hold the airodump-ng process
 airodump_process = None
 
+display_state = True
 
 def display_logo():
     image = Image.open('frog-logo-240x240.jpg')
@@ -46,66 +47,28 @@ def stop_airodump():
     print("Airodump-ng stopped.")
 
 
-def turn_off_display():
-    disp.clear()  # Clear the display
-    disp.bl_DutyCycle(0)  # Turn off the backlight
-
-
-def execute_command_and_display_output():
-    def run_command():
-        command = ["sudo", "airodump-ng", "wlan1"]
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-
-        while not stop_thread.is_set():
-            line = process.stdout.readline()
-            if not line:
-                break
-            if "BSSID" in line or "ESSID" in line:
-                with thread_lock:
-                    summary_lines.append(line.strip())
-                    if len(summary_lines) > 10:
-                        summary_lines.pop(0)
-
-        process.terminate()
-
-    summary_lines = []
-    thread_lock = threading.Lock()
-    stop_thread = threading.Event()
-    command_thread = threading.Thread(target=run_command)
-    command_thread.start()
-
-    try:
-        while not disp.digital_read(disp.GPIO_KEY1_PIN):
-            disp.clear()
-            image = Image.new("RGB", (disp.width, disp.height), "BLACK")
-            draw = ImageDraw.Draw(image)
-
-            with thread_lock:
-                for i, line in enumerate(summary_lines):
-                    y_position = i * 15
-                    draw.text((10, y_position), line, fill=(255, 255, 255),
-                              font=ImageFont.truetype("Font/Font02.ttf", 20))
-
-            disp.ShowImage(image)
-            time.sleep(0.1)
-    finally:
-        stop_thread.set()
-        command_thread.join()
-
-    # Clear the display or return to the main menu here
+def toggle_display():
+    global display_state
+    display_state = not display_state
+    if display_state:
+        disp.clear()
+        disp.bl_DutyCycle(0)
+        display_state = False
+    else:
+        disp.bl_DutyCycle(50)
+        display_menu()
+        display_state = True
 
 
 # Menu structure
 menu_items = [
     {"name": "start airodump on wlan1", "action": start_airodump()},
     {"name": "stop airodump", "action": stop_airodump()},
-    {"name": "Execute Command", "action": execute_command_and_display_output},
     {"name": "Show Image", "action": display_logo},  # Reference to the function
     {"name": "Submenu", "submenu": [
         {"name": "Subitem 1", "action": "subaction1"},
         {"name": "Subitem 2", "action": "subaction2"}
-    ]},
-    {"name": "Item 3", "action": "action3"}
+    ]}
 ]
 
 current_menu = menu_items
