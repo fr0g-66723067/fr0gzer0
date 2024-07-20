@@ -26,26 +26,26 @@ def display_logo():
 
 
 def start_airodump():
-    global angryoxide_process
+    global airodump_process
     # Ensure no previous instance is running
-    if angryoxide_process is not None:
+    if airodump_process is not None:
         print("Airodump-ng is already running.")
         return
     # Start airodump-ng with output directed to a log file in JSON format
     command = ["sudo", "airodump-ng", "-i", "wlan1", "--write-interval", "1", "--output-format", "csv", "-w",
                "/home/user/airodump_output/fr0gzer0"]
-    angryoxide_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    airodump_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print("Airodump-ng started.")
 
 
 def stop_airodump():
-    global angryoxide_process
-    if angryoxide_process is None:
+    global airodump_process
+    if airodump_process is None:
         print("Airodump-ng is not running.")
         return
     # Terminate the process
-    angryoxide_process.terminate()
-    angryoxide_process = None
+    airodump_process.terminate()
+    airodump_process = None
     print("Airodump-ng stopped.")
 
 
