@@ -21,10 +21,16 @@ def display_logo():
 
 def execute_command_and_display_output():
     # Define the command to execute, e.g., 'ls' for listing directory contents
-    command = ["ls", "-l"]
+    command = ["sudo", "airodump-ng", "wlan1"]
 
-    # Execute the command and capture the output
-    result = subprocess.run(command, stdout=subprocess.PIPE, text=True)
+    # Run the command and capture the output
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=30)
+
+    lines = result.stdout.split('\n')
+    summary_lines = []
+    for line in lines:
+        if "BSSID" in line or "ESSID" in line:
+            summary_lines.append(line.strip())
 
     # Clear the display before showing new content
     disp.clear()
@@ -36,9 +42,6 @@ def execute_command_and_display_output():
     # Set up font and text color
     font = ImageFont.truetype("Font/Font02.ttf", 20)
     text_color = (255, 255, 255)  # White color
-
-    # Split the output into lines for display
-    output_lines = result.stdout.split('\n')
 
     # Display each line of the output
     for i, line in enumerate(output_lines):
