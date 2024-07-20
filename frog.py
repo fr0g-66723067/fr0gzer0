@@ -49,6 +49,14 @@ def stop_airodump():
     print("Airodump-ng stopped.")
 
 
+def start_angryoxide_2():
+    start_angryoxide(2)
+
+
+def start_angryoxide_5():
+    start_angryoxide(5)
+
+
 def start_angryoxide(ghz):
     global angryoxide_process
     # Ensure no previous instance is running
@@ -120,12 +128,12 @@ menu_items = [
     {"name": "attack", "submenu": [
         {"name": "wifi", "submenu": [
             {"name": "angryoxide-2ghz", "submenu": [
-                {"name": "start", "action": start_angryoxide(2)},
-                {"name": "stop", "action": stop_angryoxide()}
+                {"name": "start", "action": start_angryoxide_2},
+                {"name": "stop", "action": stop_angryoxide}
             ]},
             {"name": "angryoxide-5ghz", "submenu": [
-                {"name": "start", "action": start_angryoxide(5)},
-                {"name": "stop", "action": stop_angryoxide()}
+                {"name": "start", "action": start_angryoxide_5},
+                {"name": "stop", "action": stop_angryoxide}
             ]}
         ]}
     ]},
