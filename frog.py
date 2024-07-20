@@ -38,13 +38,17 @@ def display_menu():
     draw = ImageDraw.Draw(image)
 
     font = ImageFont.truetype("Font/Font02.ttf", 36)
+    text_color = (0, 255, 0)  # Green color in RGB
+
+    # Calculate the height of the text with the current font size
+    text_height = font.getsize("Test")[1] + 10  # Adding 10 pixels as margin
 
     for i, item in enumerate(current_menu):
-        text_color = (0, 255, 0)
+        y_position = i * text_height  # Calculate the y position based on the text height
         if i == current_index:
-            draw.text((10, i*20), "> " + item["name"], fill=text_color, font=font)
+            draw.text((10, y_position), "> " + item["name"], fill=text_color, font=font)
         else:
-            draw.text((10, i*20), item["name"], fill=text_color, font=font)
+            draw.text((10, y_position), item["name"], fill=text_color, font=font)
     disp.ShowImage(image)
 
 
