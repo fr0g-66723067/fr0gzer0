@@ -1,3 +1,4 @@
+import csv
 import logging
 import ST7789
 import time
@@ -64,7 +65,26 @@ def display_csv_files():
 
 # Function to display the contents of the selected .csv file (placeholder)
 def display_file_contents(filename):
-    print(f"Displaying contents of {filename}")  # Placeholder for actual implementation
+    print("Displaying file contents for:", filename)
+    csv_file_path = f"/home/user/airodump_output/{filename}"
+    networks = []
+
+    try:
+        with open(csv_file_path, mode='r') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                essid = row.get("ESSID", "Unknown").strip()
+                bssid = row.get("BSSID", "Unknown").strip()
+                networks.append((essid, bssid))
+    except Exception as e:
+        print(f"Error reading file: {e}")
+
+
+def display_network_details(networks):
+    global current_menu, current_index, menu_stack
+    current_menu = [{"name": f"ESSID: {net[0]}, BSSID: {net[1]}", "action": lambda: None} for net in networks]
+    current_index = 0
+    display_menu()
 
 
 # Modify the existing display_menu function to support scrolling and displaying long lists
@@ -78,7 +98,6 @@ def display_menu():
 
     # Calculate the number of items that can fit on the screen
     max_items = disp.height // (font.getsize("Test")[1] + 10)  # Adjust spacing based on font size
-
     start_index = max(0, current_index - max_items + 1)
     end_index = min(len(current_menu), start_index + max_items)
 
