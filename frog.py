@@ -31,7 +31,7 @@ def start_airodump():
         print("Airodump-ng is already running.")
         return
     # Start airodump-ng with output directed to a log file in JSON format
-    command = ["sudo", "airodump-ng", "-i", "wlan1", "--write-interval", "1", "--output-format", "csv", "-w", "/home/user/airodump_output/"]
+    command = ["sudo", "airodump-ng", "-i", "wlan1", "--write-interval", "1", "--output-format", "csv", "-w", "/home/user/airodump_output/fr0gzer0"]
     airodump_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print("Airodump-ng started.")
 
