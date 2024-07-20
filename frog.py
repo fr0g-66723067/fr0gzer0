@@ -95,8 +95,8 @@ def display_menu():
     image = Image.new("RGB", (disp.width, disp.height), "BLACK")
     draw = ImageDraw.Draw(image)
 
-    font = ImageFont.truetype("Font/Font02.ttf", 20)
-    text_color = (255, 255, 255)  # White color
+    font = ImageFont.truetype("Font/Font02.ttf", 36)
+    text_color = (0, 255, 0)  # White color
 
     # Calculate the number of items that can fit on the screen
     max_items = disp.height // (font.getsize("Test")[1] + 10)  # Adjust spacing based on font size
