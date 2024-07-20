@@ -44,8 +44,8 @@ def execute_command_and_display_output():
     text_color = (255, 255, 255)  # White color
 
     # Display each line of the output
-    for i, line in enumerate(output_lines):
-        y_position = i * 25  # Adjust y position based on font size and desired spacing
+    for i, line in enumerate(summary_lines[:10]):
+        y_position = i * 15  # Adjust y position based on font size and desired spacing
         draw.text((10, y_position), line, fill=text_color, font=font)
 
     # Show the image on the display
