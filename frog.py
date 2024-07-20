@@ -22,6 +22,33 @@ def display_logo():
     import threading
 
 
+import subprocess
+
+# Global variable to hold the airodump-ng process
+airodump_process = None
+
+def start_airodump():
+    global airodump_process
+    # Ensure no previous instance is running
+    if airodump_process is not None:
+        print("Airodump-ng is already running.")
+        return
+    # Start airodump-ng with output directed to a log file in JSON format
+    command = ["sudo", "airodump-ng", "wlan1", "--write-interval", "1", "--output-format", "json", "--write", "/path/to/logfile"]
+    airodump_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    print("Airodump-ng started.")
+
+def stop_airodump():
+    global airodump_process
+    if airodump_process is None:
+        print("Airodump-ng is not running.")
+        return
+    # Terminate the process
+    airodump_process.terminate()
+    airodump_process = None
+    print("Airodump-ng stopped.")
+
+
 def execute_command_and_display_output():
     def run_command():
         command = ["sudo", "airodump-ng", "wlan1"]
@@ -68,7 +95,8 @@ def execute_command_and_display_output():
 
 # Menu structure
 menu_items = [
-    {"name": "Item 1", "action": "action1"},
+    {"name": "start airodump on wlan1", "action": start_airodump()},
+    {"name": "stop airodump", "action": stop_airodump()},
     {"name": "Execute Command", "action": execute_command_and_display_output},
     {"name": "Show Image", "action": display_logo},  # Reference to the function
     {"name": "Submenu", "submenu": [
