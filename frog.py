@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.DEBUG)
 disp = ST7789.ST7789()
 disp.Init()
 disp.clear()
-disp.bl_DutyCycle(50)
+disp.bl_DutyCycle(10)
 
 # Global variable to hold the airodump-ng process
 airodump_process = None
@@ -96,7 +96,7 @@ def toggle_display():
     global display_state
     display_state = not display_state
     if display_state:
-        disp.bl_DutyCycle(50)
+        disp.bl_DutyCycle(10)
         display_state = True
         display_menu()
     else:
