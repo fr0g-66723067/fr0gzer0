@@ -52,12 +52,12 @@ def toggle_display():
     display_state = not display_state
     if display_state:
         disp.clear()
-        disp.bl_DutyCycle(0)
-        display_state = False
-    else:
         disp.bl_DutyCycle(50)
-        display_menu()
         display_state = True
+    else:
+        disp.bl_DutyCycle(0)
+        display_menu()
+        display_state = False
 
 
 # Menu structure
