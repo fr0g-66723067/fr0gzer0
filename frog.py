@@ -51,15 +51,15 @@ def handle_input():
 
     while True:
         now = time.time()
-        if disp.digital_read(disp.GPIO_KEY_UP_PIN) == 0 and (now - last_press_time) > debounce_time:
+        if disp.digital_read(disp.GPIO_KEY_UP_PIN) != 0 and (now - last_press_time) > debounce_time:
             current_index = (current_index - 1) % len(current_menu)
             display_menu()
             last_press_time = now
-        elif disp.digital_read(disp.GPIO_KEY_DOWN_PIN) == 0 and (now - last_press_time) > debounce_time:
+        elif disp.digital_read(disp.GPIO_KEY_DOWN_PIN) != 0 and (now - last_press_time) > debounce_time:
             current_index = (current_index + 1) % len(current_menu)
             display_menu()
             last_press_time = now
-        elif disp.digital_read(disp.GPIO_KEY_PRESS_PIN) == 0 and (now - last_press_time) > debounce_time:  # Enter
+        elif disp.digital_read(disp.GPIO_KEY_PRESS_PIN) != 0 and (now - last_press_time) > debounce_time:  # Enter
             if "submenu" in current_menu[current_index]:
                 menu_stack.append((current_menu, current_index))
                 current_menu = current_menu[current_index]["submenu"]
@@ -68,12 +68,13 @@ def handle_input():
             else:
                 print(f"Action: {current_menu[current_index]['action']}")
             last_press_time = now
-        elif disp.digital_read(disp.GPIO_KEY1_PIN) == 0 and (now - last_press_time) > debounce_time:  # Back
+        elif disp.digital_read(disp.GPIO_KEY1_PIN) != 0 and (now - last_press_time) > debounce_time:  # Back
             if menu_stack:
                 current_menu, current_index = menu_stack.pop()
                 display_menu()
             last_press_time = now
         time.sleep(0.1)  # Small delay to prevent high CPU usage
+
 
 # Display logo then show menu
 display_logo()
