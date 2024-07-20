@@ -13,19 +13,15 @@ disp.Init()
 disp.clear()
 disp.bl_DutyCycle(50)
 
+# Global variable to hold the airodump-ng process
+airodump_process = None
+
 
 def display_logo():
     image = Image.open('frog-logo-240x240.jpg')
     disp.ShowImage(image)
     time.sleep(3)
 
-    import threading
-
-
-import subprocess
-
-# Global variable to hold the airodump-ng process
-airodump_process = None
 
 def start_airodump():
     global airodump_process
@@ -38,6 +34,7 @@ def start_airodump():
     airodump_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print("Airodump-ng started.")
 
+
 def stop_airodump():
     global airodump_process
     if airodump_process is None:
@@ -47,6 +44,11 @@ def stop_airodump():
     airodump_process.terminate()
     airodump_process = None
     print("Airodump-ng stopped.")
+
+
+def turn_off_display():
+    disp.clear()  # Clear the display
+    disp.bl_DutyCycle(0)  # Turn off the backlight
 
 
 def execute_command_and_display_output():
